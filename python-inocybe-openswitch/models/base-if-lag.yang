@@ -1,0 +1,74 @@
+module base-if-lag {
+    namespace "http://www.dellemc.com/networking/os10/base-if-lag";
+
+    prefix "base-if-lag";
+
+	import ietf-interfaces {
+		prefix "if";
+	}
+	
+    import base-common {
+        prefix "base-cmn";
+    }
+
+    import base-if-phy {
+        prefix "base-if-phy";
+    }
+
+    organization "Dell EMC";
+    contact "http://www.dell.com/support";
+
+    description "This model augments the standard interface and adds Dell EMC specific
+    				lag extensions.";
+
+    revision "2016-01-01" {
+        description "Initial version.";
+    }
+	
+	augment "/if:interfaces-state/if:interface" {
+        leaf num-ports {
+            type uint32;
+            description "number of members in the lag interface";
+        }	
+	}
+	
+	augment "/if:interfaces/if:interface" {
+		description "This extension is focused on LAG attributes.";
+        leaf id {
+            type uint32;
+            description "Lag id from Applications";
+        }
+
+
+        leaf lag-opaque-data {
+            config false;
+            type base-cmn:lag-opaque-data;
+            description
+                "NPU LAG opaque data associated with the NOGS base LAG module";
+        }
+
+        leaf lag-port-state {
+            description "state of member port in lag to hash traffic
+                disable or enable";
+            type enumeration {
+                enum DISABLE;
+                enum ENABLE;
+            }
+        }
+
+        leaf-list block-port-list {
+            type if:interface-ref;
+            description "Port list to block in NPU";
+        }
+
+        leaf-list unblock-port-list {
+            type if:interface-ref;
+            description "Port list to unblock in NPU";
+        }
+
+        leaf learn-mode{
+            type base-if-phy:mac-learn-mode;
+            description "Mode in which mac adresses are learned on this interface";
+        }
+	}
+}

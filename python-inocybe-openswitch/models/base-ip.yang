@@ -1,0 +1,103 @@
+
+
+module base-ip {
+    namespace "http://www.dellemc.com/networking/os10/base-ip";
+    prefix "base-ip";
+
+    import base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-inet-types {
+        prefix "inet";
+    }
+    organization "Dell EMC";
+
+    contact "http://www.dell.com/support";
+
+    description "This model will support the configruation of IP address.
+
+    	";
+
+    revision 2015-08-12 {
+        description "Initial version.";
+    }
+
+
+	grouping common-ip-config-params {
+	    leaf ifindex {
+	     	type base-cmn:logical-ifindex;
+	      	description "The interface index";
+	    }		
+		leaf enabled {
+			type boolean;
+			description "Set to true to enable IPv6 for the interface.
+                IPv6 is enabled by default for L3 interfaces.";
+		}		
+		leaf forwarding {
+			type boolean;
+			description "Set to true to enable IP forwarding.
+                IP forwarding is enabled by default.";
+		}		
+		leaf vrf-id {
+			type uint32;
+			description "A numerical value of the vrf that contains the interface.  Use 0 for the default.";
+		}
+		leaf name {
+			type string;
+			description "The interfaces's name.";
+		}
+		leaf vrf-name {
+			type string;
+			description "The VRF name.";
+		}
+	}
+
+	list ipv4 {
+		key "name";
+		
+		uses common-ip-config-params;
+		
+		list address {			
+			key "ip";
+		    leaf ip {
+		      	type inet:ip-address;
+		      	description "IP address";
+		    }
+		    leaf prefix-length {
+		    	type uint8;
+		    }
+		     			
+		}		
+	}
+	
+	list ipv6 {
+		key "name";
+		
+		uses common-ip-config-params;
+
+		leaf dup-addr-detect-transmits {
+			type uint32;			
+		}
+
+        leaf autoconf {
+            type boolean;
+            description "Set to true to enable IPv6 address auto-configuration
+                using prefix information in Router advertisements.
+                IPv6 autoconfiguration is enabled by default if forwarding is disabled.";
+		}
+		
+		list address {			
+			key "ip";
+		    leaf ip {
+		      	type inet:ip-address;
+		      	description "IP address";
+		    }
+		    leaf prefix-length {
+		    	type uint32;
+		    }
+		     			
+		}		
+	}
+	
+}	
