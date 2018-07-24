@@ -1,9 +1,20 @@
 #!/usr/bin/env python
+# Copyright (c) 2018 Inocybe Technologies.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+#
+# THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+# LIMITATION ANY IMPLIED WARRANTIES OR CONDITIONS OF TITLE, FITNESS
+# FOR A PARTICULAR PURPOSE, MERCHANTABLITY OR NON-INFRINGEMENT.
+#
+# See the Apache Version 2.0 License for specific language governing
+# permissions and limitations under the License.
 
-'''Temporary mapping of CPS operations onto JSON RPC
-This should be replaced completely using an interface into the CPS
-Schema.
-'''
+
+'''Mapping of CPS operations onto JSON RPC'''
 
 import re
 
@@ -994,8 +1005,11 @@ GLOBAL_MAP = TypeMap({'base-ip/ipv4/forwarding': DO_BOOL,
            'base-acl/entry/match/type':DO_MATCH_TYPE,
            'base-acl/entry/match/IP_PROTOCOL_VALUE':DO_MATCH_TYPE,
            'base-acl/entry/match/IP_TYPE_VALUE':DO_IP_TYPE,
-#           'base-acl/entry/action/COUNTER_VALUE':DO_COUNTER_TYPE,
+           'base-acl/entry/action/COUNTER_VALUE':DO_COUNTER_TYPE,
+           'base-acl/entry/action/PACKET_ACTION_VALUE':DO_PACKET_ACTION_TYPE,
            'base-acl/entry/action/type':DO_ACTION_TYPE,
+           'base-acl/table/allowed-match-fields':DO_MATCH_TYPE,
+           'base-acl/table/stage':DO_STAGE,
            })
 
 

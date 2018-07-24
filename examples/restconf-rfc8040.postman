@@ -1,0 +1,125 @@
+{
+  "id": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+  "name": "Local Openswitch Demo RFC8040",
+  "requests": [
+    {
+      "id": "6e356ccb-d523-4ce0-8c4c-7d5807e51ae2",
+      "collectionId": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/rests/data/jsonrpc:config/configured-endpoints=openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface=br200?content=config",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "5ebf2b71-20ba-48c8-85c9-e7ce0a5e108d",
+      "collectionId": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/rests/data/jsonrpc:config/configured-endpoints=openswitch-1/yang-ext:mount/base-acl:entry=1,2?content=config",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "34a89c4f-1265-4d34-9eaf-9595fbdff7bf",
+      "collectionId": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+      "method": "POST",
+      "url": "http://127.0.0.1:8181/rests/data/jsonrpc:config/configured-endpoints=openswitch-1/yang-ext:mount/ietf-interfaces:interfaces",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "0f416c17-2663-4429-af37-8117cda6720c",
+      "collectionId": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+      "method": "PUT",
+      "url": "http://127.0.0.1:8181/rests/data/jsonrpc:config/configured-endpoints=openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface=e101-002-0",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "b02d417b-2ad7-4bb5-b22d-d0b758ad3fa1",
+      "collectionId": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+      "method": "PUT",
+      "url": "http://127.0.0.1:8181/rests/data/jsonrpc:config/configured-endpoints=openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface=e101-001-0",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "54c9df2e-4998-44f4-b455-0c4be7219f82",
+      "collectionId": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/rests/data/jsonrpc:config/configured-endpoints=openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface=e101-001-0?content=config",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "f4ff2eaf-41ea-4f4d-b76a-4e789b159b80",
+      "collectionId": "1d016741-84fc-4ca0-8611-6db62d4536ae",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/rests/data/jsonrpc:config/configured-endpoints=openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface=e101-002-0?content=config",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    }
+  ]
+}

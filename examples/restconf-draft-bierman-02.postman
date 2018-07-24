@@ -1,0 +1,159 @@
+{
+  "id": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+  "name": "Local Demo",
+  "requests": [
+    {
+      "id": "bcfee92a-f550-48c4-82cd-a8c31511b89a",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/configured-endpoints/openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface/e101-002-0",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "51437e74-cffa-445e-9856-a057501e3e31",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/configured-endpoints/openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface/e101-001-0",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "f653582d-68c8-46a8-be80-39e5b7c9dcfb",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "PUT",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/configured-endpoints/openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface/e101-001-0",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "871ade86-e34e-41ef-bd8f-62af529ae25d",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "PUT",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/configured-endpoints/openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface/e101-002-0",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "901db7d2-9b0b-4683-a575-945a2b02e4e1",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "POST",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/configured-endpoints/openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "30485d39-1909-4965-a143-ee0a99f769d6",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/configured-endpoints/openswitch-1/yang-ext:mount/ietf-interfaces:interfaces/interface/br200",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "e267f2b4-4cf1-4374-8785-e70d5b4e4a2a",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/configured-endpoints/openswitch-1/yang-ext:mount/base-ip:ipv4/lo",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "04fdabe7-bdec-4c3f-a975-efc58a1b5066",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "GET",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    },
+    {
+      "id": "58aecc56-ee63-4b38-a4e5-87bd8ebf5a05",
+      "collectionId": "9e84151d-ec13-4de0-9165-3579d7d08d42",
+      "method": "PUT",
+      "url": "http://127.0.0.1:8181/restconf/config/jsonrpc:config/",
+      "headers": "Content-type: application/json\n",
+      "dataMode": "urlencoded",
+      "data": [
+        {
+          "key": "",
+          "value": "",
+          "type": "text",
+          "enabled": true
+        }
+      ],
+      "rawModeData": []
+    }
+  ]
+}

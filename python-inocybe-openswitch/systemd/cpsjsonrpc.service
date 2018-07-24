@@ -1,0 +1,13 @@
+[Unit]
+Description=JSON RPC 2.0 to CPS Gateway
+DefaultDependencies=no
+After=opx-qos.service opx-pas.service
+Wants=opx-qos.service opx-pas.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/opt/pycnoporus/python3-inocybe-openswitch/systemd/run-service.sh
+
+[Install]
+WantedBy=multi-user.target

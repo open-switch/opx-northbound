@@ -1,0 +1,12 @@
+#!/bin/bash
+
+### execute the args to this script with a PYTHONPATH that picks up local development versions of python packages first
+
+set -e
+set -o pipefail
+
+DIR="$(realpath $(dirname "$0"))"
+
+export PYTHONPATH=$PYTHONPATH:$(ls -1d "${DIR}"/python-* | python -c 'import sys; print ":".join(sys.stdin.read().strip().split("\n"))')
+
+exec "$@"
