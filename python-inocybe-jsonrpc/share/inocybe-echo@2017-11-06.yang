@@ -1,0 +1,24 @@
+module inocybe-echo {
+
+    namespace "urn:com.inocybe:echo";
+
+    prefix "echo";
+
+    organization "Inocybe Technologies";
+
+    // contact "";
+    // description "";
+
+    revision "2017-11-06" {
+        description "Initial version";
+    }
+
+    rpc echo {
+        input {
+            anyxml params;
+        }
+        output {
+            anyxml params;
+        }
+    }
+}

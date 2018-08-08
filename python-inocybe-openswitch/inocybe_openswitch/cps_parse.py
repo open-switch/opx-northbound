@@ -1,4 +1,18 @@
 #!/usr/bin/env python
+# Copyright (c) 2018 Inocybe Technologies.
+#
+# Licensed under the Apache License, Version 2.0 (the "License"); you may
+# not use this file except in compliance with the License. You may obtain
+# a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+#
+# THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT
+# LIMITATION ANY IMPLIED WARRANTIES OR CONDITIONS OF TITLE, FITNESS
+# FOR A PARTICULAR PURPOSE, MERCHANTABLITY OR NON-INFRINGEMENT.
+#
+# See the Apache Version 2.0 License for specific language governing
+# permissions and limitations under the License.
+
 
 '''Mapping of CPS operations onto JSON RPC'''
 
@@ -150,7 +164,7 @@ def _yin_path(supplied_path):
     return _yin_other_path(supplied_path)
 
 def _prep_data(orig_path, data):
-    '''Set correct encoding, remap or otherwise massage all data elements'''
+    '''Set correct encoding on all data elements'''
     if isinstance(data, str):
         return data
     if isinstance(data, unicode):
@@ -231,7 +245,8 @@ def _do_convert_result(in_path, element_path, value):
     if cps_type["attribute_type"] == "leaf-list":
         ylist = []
         for element in value:
-            ylist.append(cps_utils.cps_attr_types_map.from_data(element_path, element))
+            list_val = cps_utils.cps_attr_types_map.from_data(element_path, element)
+            ylist.append(GLOBAL_MAP.from_cps(element_path, list_val))
         result = {key:ylist}
     elif cps_type["attribute_type"] == "list":
         ylist = []
@@ -253,9 +268,18 @@ def _do_convert_result(in_path, element_path, value):
 
 def prep_path(in_path, element):
     '''Strip one or more elements from the right side of a path
-       until is found in one of the keys in the element
+       until is found in one of the keys in the element.
+       CPS returns a list of key-value pairs of yin path and
+       value. As a result of the prefix being pre-pended to
+       the path in yin, the keys need to be pruned from
+       the front so that they all start with the same path element.
+
+       An additional complication arises from various "metadata" or
+       hints elements in some CPS results. While it is theoretically
+       possible to special case all of them, that is quite fragile
+       so we eliminate them on the basis of them being "one-off" and
+       not fitting the overall key pattern.
     '''
-    
 
     score = 0
     old_score = 0
@@ -280,13 +304,9 @@ def prep_path(in_path, element):
                     del element['data'][key]
 
             return prev_path
-        
         prev_path = in_path
         old_score = score
         in_path = in_path[in_path.find("/") + 1:]
-
-    
-
 
 def convert_result(in_path, element):
     '''Convert an openswitch cps result to a form which can be serialized
@@ -393,9 +413,11 @@ class Transaction(object):
         result = cps.transaction(self._cps_tx)
         if result:
             return True
-        # The mapping between set/create in restconf, json rpc, etc
-        # and CPS is not  perfect, sometimes CPS needs to be given a
-        # set where upstream tries a create. 
+        # The mapping between set/create in ODL and CPS is not
+        # perfect, sometimes CPS needs to be given a set where
+        # ODL expects a create. Due to the fact that ODL
+        # always checks for existance first this will not give
+        # rise to conflicts
         for oper in self._cps_tx:
             if oper['operation'] == 'create':
                 oper['operation'] = 'set'
