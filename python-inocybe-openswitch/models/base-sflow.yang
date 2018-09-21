@@ -1,0 +1,99 @@
+module base-sflow {
+
+    namespace "http://www.dellemc.com/networking/os10/dell-base-sflow";
+    prefix "base-sflow";
+
+    import base-common {
+        prefix "base-cmn";
+    }
+    import ietf-inet-types {
+        prefix "inet";
+    }
+
+    organization
+        "Dell EMC";
+
+    contact
+    "http://www.dell.com/support";
+
+    description
+        "This module contains a collection of YANG definitions provided
+         by platfrom to manage sflow objects";
+
+    revision 2014-02-11 {
+        description
+            "Initial revision";
+    }
+
+    list entry {
+
+        key "id";
+
+        description
+            "sflow session attributes";
+
+		leaf id{
+			type uint32;
+			description
+				"Session id to uniquely identify a sflow session";
+		}
+
+        choice  if {
+            case index {
+                leaf ifindex {
+                    type base-cmn:logical-ifindex;
+                    description
+                        "Interface Index which is unique across switch to identify
+                        logical/physical interface";
+                }
+            }
+            case name {
+                leaf ifname {
+                    type string;
+                    description
+                        "Interface name which is unique across switch to identify
+                        logical/physical interface";
+                }
+            }
+        }
+
+        leaf ifindex {
+            type base-cmn:logical-ifindex;
+            status deprecated;
+        	mandatory true;	
+            description
+            	"Interface index which uniquely identifies physical
+            	 interface in the switch where packet sampling needs to
+            	 to be enabled";
+        }
+
+        leaf direction {
+            type base-cmn:traffic-path;
+            mandatory true;
+            description
+            	"Direction of packets in which sampling needs to be enabled";
+        }
+
+        leaf sampling-rate{
+        	type uint32;
+            mandatory true;
+            description "Rate at which packets sampling needs to be enabled";
+        }
+    }
+
+    container socket-address {
+        description
+            "Address that Sflow Applications need to open UDP socket on
+             to receive sampled packets. Sampled packets from all Sflow
+             sessions are sent to a single UDP socket.";
+
+        leaf ip {
+            type inet:ipv4-address;
+            default 127.0.0.1;
+        }
+        leaf udp-port {
+            type uint16;
+            default 20001;
+        }
+    }
+}

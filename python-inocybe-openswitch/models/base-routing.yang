@@ -1,0 +1,966 @@
+module base-routing {
+
+namespace "http://www.dellemc.com/networking/os10/dell-base-routing";
+prefix "base-route";
+
+import ietf-yang-types {
+  prefix yang;
+}
+import ietf-inet-types {
+  prefix inet;
+}
+
+import base-common {
+   prefix "base-cmn";
+}
+
+import base-interface-common {
+   prefix "base-if";
+}
+
+organization
+"Dell EMC";
+
+contact
+"http://www.dell.com/support";
+
+description
+"This module contains a collection of YANG definitions for
+managing configuration and operational data for Routing Object";
+
+revision 2018-04-05 {
+    description
+        "This revision adds the NH VRF name in the existing RPC to append or
+        delete nexthop(s) to/from an existing leaked route from one VRF to another.";
+    reference
+        "Network Platform Abstraction";
+}
+
+revision 2018-04-02 {
+    description
+        "This revision adds the VRF name in the next-hop entry to support the route leaking from one VRF to another.";
+    reference
+        "Network Platform Abstraction";
+}
+
+revision 2018-03-12 {
+description
+    "This revision adds the support for proxy ARP enable/disable on router interface.";
+reference
+    "Update since last revision.";
+}
+
+revision 2018-02-09 {
+description
+"This revision adds the config support for virtual routing
+ configuration object to configure peer IP.";
+}
+
+revision 2018-01-23 {
+description
+"This revision adds the config support for ICMP redirects.";
+}
+
+revision 2017-01-11 {
+description
+"This revision adds the event filter to publish the selective routes,
+by default, no route events will be published.";
+}
+
+revision 2016-04-05 {
+description
+"VLT Peer routing enable/disable support";
+}
+
+revision 2014-08-06 {
+description
+"Initial revision.";
+}
+
+/*
+* Typedefs
+*/
+
+/*
+* Identities
+*/
+
+identity routing-object-base {
+description
+"Base identity from which specific routing protocols are
+derived.";
+}
+
+/*
+* Features
+*/
+
+/*
+ *  typedefs
+ */
+ typedef rt-owner {
+   		type enumeration {
+            enum os-static {
+              value 1;
+            }
+            enum os-privileged {
+              value 2;
+            }
+            enum dc-rtm {
+              value 3;
+            }
+            enum mgmtroute {
+              value 4;
+            }
+            enum zebra {
+              value 5;
+            }
+            enum bird {
+              value 6;
+            }
+            enum thirdparty-apps {
+              value 7;
+            }
+       	}
+  }
+
+typedef rt-type {
+	type enumeration {
+        enum static {
+          value 1;
+        }
+        enum dynamic {
+          value 2;
+        }
+    }
+}
+
+typedef nh-type {
+  type enumeration {
+        enum regular {
+          value 1;
+        }
+        enum interface {
+          value 2;
+        }
+        enum null0 {
+          value 3;
+        }
+        enum loopback {
+          value 4;
+        }
+	    enum ecmp {
+          value 5;
+        }
+	    enum wecmp {
+          value 6;
+        }
+	    enum protection-switching {
+          value 7;
+        }
+	    enum other {
+          value 8;
+        }
+   }
+ }
+
+ typedef hash-info {
+ type enumeration {
+            enum mac-based {
+              value 1;
+            }
+            enum ip {
+              value 2;
+            }
+            enum mac-ip {
+              value 3;
+            }
+        }
+ }
+
+  typedef rt-status {
+	  type enumeration {
+       enum up {
+       		value 1;
+   		 }
+       enum down {
+       		value 2;
+ 		 }
+ 	 }
+  }
+
+ typedef rt-mode {
+	  type enumeration {
+    	       enum default {
+                    value 1;
+                 }
+                 enum scaled-l3-hosts {
+                    value 2;
+                 }
+                 enum scaled-l3-routes {
+                    value 3;
+                 }
+       }
+  }
+
+  typedef neighbor-state {
+    type enumeration {
+        enum incomplete {
+            value 1;
+        }
+        enum reachable {
+            value 2;
+        }
+        enum stale {
+            value 4;
+        }
+        enum delay {
+            value 8;
+        }
+        enum probe {
+            value 16;
+        }
+    }
+  }
+
+ typedef rt-operation-type {
+   type enumeration {
+      enum append {
+         value 1;
+         description "Operation to append nexthop(s) to an existing route";
+      }
+      enum delete {
+         value 2;
+         description "Operation to delete nexthop(s) from an existing route";
+      }
+   }
+ }
+
+
+  typedef special-next-hop {
+    type enumeration {
+      enum blackhole {
+        value 1;
+        description
+          "Silently discard the packet.";
+      }
+      enum unreachable {
+        value 2;
+        description
+          "Discard the packet and notify the sender with an error
+           message indicating that the destination host is unreachable.";
+      }
+      enum prohibit {
+        value 3;
+        description
+          "Discard the packet and notify the sender with an error
+           message indicating that the communication is
+           administratively prohibited.";
+      }
+      enum receive {
+        value 4;
+        description
+          "The packet will be received by the local system.";
+      }
+    }
+  }
+/*
+* Configuration of the core elements of the Switch
+*/
+ grouping next-hop {
+	description
+	  "Next Hop info";
+      leaf nh-id {
+       type uint32;
+         description "ID for next-hop";
+        }
+
+    leaf nh-addr {
+      type inet:ip-address;
+      description "IP address";
+    }
+
+    leaf ifindex {
+      type base-cmn:logical-ifindex;
+      description "Logical IF index must be interace type or null0 type for routes";
+    }
+
+    leaf ifname {
+      type string;
+      description "Name of the interface through which this next-hop is reachable";
+    }
+
+	leaf weight {
+	  type uint32;
+	  description "Used for Weighted ECMP";
+ 	}
+	leaf resolved {
+	  type boolean;
+	  description "Is nexthop resolved?";
+ 	}
+    leaf  npu-prg-done{
+          type boolean;
+          default false;
+          description "Is NPU programming done for this entry?";
+     }
+ }
+
+   grouping next-hop-entry {
+      description
+       "Grouping of the next hop entry";
+
+      leaf nh-vrf-name {
+          type string;
+          description "VRF device name";
+      }
+
+      leaf nh-count {
+        type uint32;
+        description "Number of next hops";
+      }
+
+      leaf group-id {
+       type uint32;
+          description "ECMP group ID or Non-ECMP nexthop ID";
+        }
+
+      leaf nh-type {
+        type nh-type;
+        description "Type of next hop";
+      }
+
+     leaf hash-info {
+        type hash-info;
+        description "Hashing mechanisms";
+      }
+
+      list nh-list {
+        key "nh-addr";
+        description
+            "Next-Hop info depending on the number of next-hops";
+        uses next-hop;
+      }
+
+   }
+
+   grouping special-next-hop-entry {
+      description
+         "This grouping provides a leaf with an enumeration of special
+          next-hops.";
+
+      leaf special-next-hop {
+         type special-next-hop;
+         description
+            "Special next-hop options.";
+      }
+   }
+
+
+   grouping l3-route-entry {
+     description
+	"This grouping defines the l3 route entry";
+
+    leaf vrf-id {
+      type uint32;
+      description "VRF ID";
+      status obsolete;
+    }
+
+
+    leaf route-prefix {
+      type inet:ip-address;
+	     description "route address";
+    }
+
+    leaf prefix-len {
+      type uint32;
+      description "Prefix Length";
+    }
+
+    leaf af {
+      type base-cmn:af-type;
+      description "Address Family";
+    }
+
+     uses next-hop-entry;
+
+     leaf epoch-time {
+      type uint64;
+      description "epoch time of the route when it got updated";
+     }
+
+    leaf distance {
+      type uint16;
+      description "Protocol admin distance";
+    }
+
+    leaf protocol {
+      type uint16;
+      description "Protocol";
+    }
+
+    leaf ifindex {
+      type base-cmn:logical-ifindex;
+      description "Logical IF index";
+    }
+
+    leaf ifname {
+      type string;
+      description "Name of the interface on which this route is configured/learnt";
+    }
+
+    leaf owner {
+	  type rt-owner;
+      description "Owner: OS Kernel Privileged, Static, DC-RTM, DC-RTM Static, Quagga etc";
+    }
+
+     leaf static-route {
+       type boolean;
+       description "Is route static or owned by other protocol";
+     }
+
+     leaf  npu-prg-done{
+          type boolean;
+          default false;
+          description "Is NPU programming done for this entry?";
+     }
+
+     uses special-next-hop-entry;
+   }
+
+grouping l3-neighbor-entry {
+description
+"This grouping defines a neighbor-table entry";
+    leaf address {
+      type inet:ip-address;
+        description "IP address";
+     }
+
+     leaf mac-addr {
+        type yang:mac-address;
+        description "MAC address";
+     }
+
+    leaf vrf-id {
+      type uint32;
+      description "VRF ID";
+      status obsolete;
+    }
+
+    leaf af {
+      type base-cmn:af-type;
+      description "Address Family";
+    }
+
+    leaf ifindex {
+      type base-cmn:logical-ifindex;
+      description "Logical IF index";
+    }
+
+    leaf ifname {
+      type string;
+      description "Name of the interface through which this neighbor is reachable";
+    }
+
+    leaf owner {
+       type rt-owner;
+      description "Owner: OS Kernel DC-RTM, Management Route, Third party app etc";
+    }
+
+    leaf flags {
+      type uint32;
+      description "Neighbor flags";
+    }
+    leaf state {
+      type uint32;
+      description "Dynamic neighbor entry states";
+    }
+
+    leaf type {
+       type  rt-type;
+		description  "Neighbor entry type";
+	}
+
+    leaf age-timeout {
+	type uint32;
+	units "seconds";
+	description "age timeout";
+    }
+    leaf  npu-prg-done{
+          type boolean;
+          default false;
+          description "Is NPU programming done for this entry?";
+    }
+  }
+
+
+list obj {
+ key "vrf-name";
+ description "This grouping defines the routing domain object";
+
+ leaf vrf-id {
+  type uint32;
+  description "vrf-name is used in place of vrf-id.";
+  status obsolete;
+ }
+
+ leaf vrf-name {
+  type string;
+  description "VRF device name";
+ }
+
+ leaf switch-id {
+   type uint32;
+   description "Logical Switch to which this routing-domain belongs.";
+ }
+
+ leaf status {
+  type rt-status;
+  description "Status of the routing-object-instance";
+ }
+
+  /* The get on the below entry will return the output for
+   * show {ip | ipv6} fib <prefix>/<pref-len> */
+ list entry {
+   key "af route-prefix prefix-len";
+   description "An entry of a L3 route table";
+   uses l3-route-entry;
+ }
+
+ list nbr {
+   key "af address" ;
+   description "An entry of a neighbor (ARP/ND) table";
+   uses l3-neighbor-entry;
+ }
+
+ leaf nsf-enabled {
+	  type boolean;
+	  description "Is NSF enabled?";
+ }
+
+ leaf eor {
+	  type boolean;
+	  description "Is End of RIB reached ?";
+ }
+
+}
+
+
+/*
+  * Route/Next-hop tracking service
+  */
+
+grouping nexthop-tracking-object {
+
+    leaf vrf-id {
+      type uint32;
+      description "VRF ID";
+      status obsolete;
+    }
+
+    leaf vrf-name {
+      type string;
+      description "VRF device name";
+    }
+    leaf af {
+      type base-cmn:af-type;
+      description "Address Family";
+    }
+
+    leaf dest-addr {
+      type inet:ip-address;
+      description "Route/Nexthop address to be tracked";
+    }
+
+    leaf data {
+      type base-cmn:ip-nexthop-group-opaque-data;
+      description
+         "Opaque blob containing hardware specific data for
+          the Next-Hop Group ID/Egress object ID as returned by NPU for single or multipath Nexthop";
+    }
+
+    leaf nh-count {
+      type uint32;
+      description "Number of next hops in resolved status";
+    }
+
+    list nh-info {
+      key "af address" ;
+      description "An entry of a neighbor (ARP/ND) table that's in resolved status";
+                   uses l3-neighbor-entry;
+    }
+  }
+
+  list nh-track {
+    key "vrf-id af dest-addr";
+    description "Route/Nexthop Tracking Service";
+                 uses nexthop-tracking-object;
+  }
+
+
+ /*
+  * Configuration of the routing-forwarding-domain elements of the Switch
+  */
+
+
+  grouping hardware-forwarding-configuration-table {
+
+      leaf vrf-id {
+        type uint32;
+        description "VRF ID";
+        status obsolete;
+      }
+
+     leaf hash-algo-seed-val {
+          type uint32;
+         description "hash-algorithm seed value ";
+     }
+
+     leaf enable-v4 {
+       type boolean;
+       default true;
+       description "Is route ipv4 routing enabled?";
+     }
+
+     leaf enable-v6 {
+       type boolean;
+       default false;
+       description "Is route ipv6 routing enabled?";
+     }
+
+     leaf deterministic-ECMP-v4-enabled {
+       type boolean;
+       default false;
+       description "Is Deterministic-ECMP enabled for ipv4?";
+     }
+
+     leaf deterministic-ECMP-v6-enabled {
+       type boolean;
+       default false;
+       description "Is Deterministic-ECMP enabled for ipv6?";
+     }
+
+     leaf mode {
+ 		type rt-mode;
+         description "hardware-forwarding-table mode";
+     }
+
+    /* Non-stop Forwarding configuration */
+     leaf nsf-v4-enabled {
+       type boolean;
+       default false;
+       description "ipv4 NSF enabled?";
+     }
+
+     leaf nsf-v6-enabled {
+       type boolean;
+       default false;
+       description "ipv6 NSF enabled?";
+     }
+     /*
+      * ip ecmp-group {maximum-paths | {number} | {path-fallback}}
+      */
+     leaf ecmp-group-max-paths {
+        type uint32;
+       description "ecmp-group maximum-paths";
+    }
+
+    leaf ecmp-group-number {
+        type uint32;
+       description "ecmp-group number";
+    }
+
+     leaf ecmp-group-path-fallback {
+       type boolean;
+       default false;
+       description "ecmp-group path-fallback";
+    }
+
+    /*
+     * Inform clients(like RTM) that FIB clear is started and completed in NPU and NAS Routing
+     */
+     leaf start-rtm-download {
+       type boolean;
+       default false;
+       description "Start download of routes from RTM";
+     }
+
+
+      leaf stop-rtm-download {
+       type boolean;
+       default false;
+       description "Indicate to stop download of routes from RTM during clear";
+      }
+
+}
+
+  container fwd-tbl-confg {
+    description "Routing and Forwarding configuration table";
+    uses hardware-forwarding-configuration-table;
+  }
+
+  /* clear { ip | ipv6} fib */
+  rpc flush {
+    description "Clear FIB entries";
+    input {
+        leaf vrf-id {
+            type uint32;
+            default 0;
+            description "VRF ID";
+            status obsolete;
+        }
+
+        leaf vrf-name {
+            type string;
+            description "VRF device name";
+        }
+
+        leaf af {
+            mandatory true;
+            type base-cmn:af-type;
+            description "Address Family of the FIB entries to be cleared";
+        }
+    }
+  }
+ /*
+  * FIB show commands
+  * show {ip | ipv6} fib summary
+  */
+  grouping fib-configuration-table {
+     /*
+      * FIB Show commands
+     */
+      leaf vrf-id {
+        type uint32;
+        description "VRF ID";
+        status obsolete;
+      }
+
+      leaf af {
+      type base-cmn:af-type;
+      description "Address Family";
+     }
+
+     leaf summary {
+       type boolean;
+       default false;
+       description "Show summary command returns the number of FIB route count";
+     }
+
+    leaf route-count {
+       type uint32;
+       description "FIB Route count";
+    }
+  }
+  container fib {
+    description "FIB configuration";
+    uses fib-configuration-table;
+  }
+
+  container peer-routing-config {
+    description "This defines the peer routing enable/disable object";
+
+    leaf vrf-id {
+      type uint32;
+      default 0;
+      description "VRF ID";
+      status obsolete;
+    }
+
+    leaf vrf-name {
+      type string;
+      description "VRF device name";
+    }
+    leaf ifname {
+      type string;
+      description "Physical/Logical L3 interface";
+    }
+
+     leaf peer-mac-addr {
+        type yang:mac-address;
+        description "Peer MAC address";
+     }
+  }
+
+  container virtual-routing-config {
+
+    list virtual-routing-ip-config {
+      key "vrf-name af ifname ip";
+
+      leaf vrf-name {
+        type string;
+        description "VRF device name";
+      }
+
+      leaf af {
+         type base-cmn:af-type;
+         description "Address Family of the peer's IP address to be configured.";
+      }
+
+      leaf ifname {
+        type string;
+        description "Physical/Logical L3 interface";
+      }
+
+      leaf ip {
+         type inet:ip-address;
+         description "Peer IP address to be configured.";
+      }
+
+      description "This defines the virtual routing IP configuration object to configure
+                   the peer routers IP for processing it when receiving it locally.";
+    }
+
+    description "This defines the virtual routing configuration object";
+  }
+
+  rpc route-nh-operation {
+    description "RPC to append or delete nexthop(s) to/from an existing route.";
+    input {
+
+      leaf operation {
+        mandatory true;
+        type rt-operation-type;
+        description "Operation to perform for the given nexthop(s) of an existing route.
+                     This is valid only during update to an existing route.";
+      }
+
+      leaf vrf-id {
+        type uint32;
+        default 0;
+        description "VRF ID";
+        status obsolete;
+      }
+
+      leaf vrf-name {
+        type string;
+        description "VRF device name";
+      }
+
+      leaf af {
+        mandatory true;
+        type base-cmn:af-type;
+        description "Address Family";
+      }
+
+      leaf route-prefix {
+        mandatory true;
+        type inet:ip-address;
+        description "Route address";
+      }
+
+      leaf prefix-len {
+        mandatory true;
+        type uint32;
+        description "Route prefix Length";
+      }
+
+      leaf nh-count {
+        mandatory true;
+        type uint32;
+        description "Number of next hops added/deleted";
+      }
+
+      leaf nh-vrf-name {
+          type string;
+          description "VRF device name for next hop";
+      }
+
+      list nh-list {
+        key "nh-addr";
+        description "Next-Hop info depending on the number of next-hops added/deleted";
+        uses next-hop;
+      }
+    }
+  }
+  list ip-unreachables-config {
+     description "Provide list of network interfaces that can initiate ICMP unreachable messages for non-routable traffic.";
+     key "af ifname";
+
+    leaf af {
+      type base-cmn:af-type;
+      description "Address Family";
+    }
+
+    leaf ifname {
+      type string;
+      description "Network interface";
+    }
+  }
+  rpc interface-mode-change {
+    description "This method is used to notify routing component for change
+      of the interface mode from None to L2 or vice versa.
+      On receiving this notification, routing component will perform the following:
+      when mode changes from None to L2, routing configurations on this interface
+       will be removed from hardware.
+      when mode changes from L2 to None, cached routing configurations (if any)
+       on this interface will be applied to hardware.";
+    input {
+      leaf ifname {
+        mandatory true;
+        type string;
+        description "Interface name for which the mode change is triggered";
+      }
+      leaf mode {
+        mandatory true;
+        type base-if:mode;
+        description "Interface mode in notification.
+          Modes that are of interest to routing component is None/L2.";
+      }
+    }
+  }
+
+  list event-filter {
+    key "vrf-name type";
+    description "Provide list of filters to publish the selective route events,
+                 by default, no route events will be published.";
+    leaf vrf-name {
+        type string;
+        description "VRF device name";
+    }
+
+    leaf type {
+        type rt-owner;
+        description "This type is used to publish the selective route type events,
+                     the event filter is now supported only for management routes.";
+    }
+
+    leaf enable {
+	  type boolean;
+	  description "If this is set to true, the filter will be applied for a selective
+          route type in the VRF and false otherwise.";
+    }
+  }
+
+  list ip-redirects-config {
+     key "vrf-name ifname";
+     description "Provide list of network interfaces that can initiate ICMP redirect messages for routable traffic, when it ingress and egress on same router interface.";
+
+    leaf vrf-name {
+        type string;
+        description "VRF device name";
+    }
+
+    leaf ifname {
+      type string;
+      description "Network interface";
+    }
+  }
+
+  list proxy-arp-config {
+      key "vrf-name ifname";
+      description "Provide list of network interfaces that can reply to ARP request
+                   on behalf of the neighbor for the target IP matching the local subnet.";
+
+      leaf vrf-name {
+          type string;
+          description "VRF device name";
+      }
+
+      leaf ifname {
+          type string;
+          description "Network interface";
+      }
+  }
+
+}

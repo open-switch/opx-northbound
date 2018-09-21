@@ -1,0 +1,74 @@
+module base-media {
+    namespace "http://www.dellemc.com/networking/os10/dell-base-media";
+    prefix "base-media";
+
+    import base-interface-common {
+        prefix "base-if";
+    }
+
+    import base-common {
+       prefix "base-cmn";
+    }
+
+    organization "Dell EMC";
+
+    contact "http://www.dell.com/support";
+
+    description "This model will support the configruation of params on interfaces";
+
+    revision 2016-01-11 {
+        description "Initial version.";
+    }
+
+    list media-info {
+        key "media-type";
+        description "This grouping defines the default settings for the media type";
+
+        leaf media-type {
+            config false;
+            type uint32;
+            description "The media type of the physical media";
+        }
+
+        leaf media-name {
+            config false;
+            type string;
+            description "The physical Media name";
+        }
+
+        leaf speed {
+            config false;
+            type base-if:speed;
+            description "default speed configuration for this physical media";
+        }
+
+        leaf autoneg {
+            config false;
+            type boolean;
+            description "default auto negotiation configuration for this physical media";
+        }
+
+        leaf duplex {
+            config false;
+            type base-cmn:duplex-type;
+            description "default duplex configuration for this physical media";
+        }
+
+        leaf hw-profile {
+            config false;
+            type uint32;
+            description "The hardware profile ID of the physical media";
+        }
+
+        leaf-list supported-speed {
+            config false;
+            type base-if:speed;
+            description " List of supported speed on this physical media";
+        }
+        leaf-list supported-phy-mode {
+            config false;
+            type base-if:phy-mode-type;
+            description " List of supported physical modes FC, ETHER on this physical media";
+        }
+    }
+}

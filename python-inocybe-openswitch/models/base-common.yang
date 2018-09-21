@@ -37,6 +37,37 @@ module base-common {
        physical ports, LAG interfaces and Vlan interfaces";
   }
 
+   typedef vni {
+     type uint32 {
+         range "1 .. 16777215";
+     }
+     description
+       "This type denotes a VXLAN Network Identifier.
+        It is 24 bits long. Hence 16 million such unique ID's are possible";
+   }
+
+   typedef filter-type {
+       type enumeration {
+           enum DISABLE {
+               value 1;
+               description "Operation to disable both ingress and egress filtering";
+           }
+           enum ENABLE {
+               value 2;
+               description "Operation to enable both ingress and egress filtering";
+           }
+           enum INGRESS_ENABLE {
+               value 3;
+               description "Operation to enable only ingress filtering";
+           }
+           enum EGRESS_ENABLE {
+               value 4;
+               description "Operation to enable only egress filtering";
+           }
+        }
+    }
+
+
   typedef npu-id {
     type uint32;
     description
@@ -250,6 +281,19 @@ module base-common {
       enum "vrf" {
         value 12;
       }
+       enum "macvlan" {
+         value 13;
+       }
+       enum "vxlan" {
+         value 14;
+       }
+       enum "bridge" {
+         value 15;
+       }
+       enum "vlan_subintf" {
+         value 16;
+       }
+
     }
     description
       "Enumeration of the various support interface types";
@@ -436,6 +480,15 @@ module base-common {
       enum BREAKOUT_4x2 {
         value 9; /* 4 logical interfaces derived from 2 front panel ports */
       }
+      enum BREAKOUT_UNKNOWN {
+        value 10; /* The breakout mode cannot be determined */
+ 	description "breakout is not identified due to unknown reason(s).";
+      }
+      enum NO_BREAKOUT {
+         value 11; /* Device does not breakout  */
+ 	description "breakout is not supported on the given port(s).";
+      }
+
     }
   }
 }

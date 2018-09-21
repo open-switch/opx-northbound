@@ -1,0 +1,142 @@
+module base-neighbor {
+
+    namespace "http://www.dellemc.com/networking/os10/dell-base-neighbor";
+    prefix "base-neighbor";
+
+    import base-common {
+        prefix "base-cmn";
+    }
+
+    import ietf-interfaces {
+        prefix "if";
+    }
+
+    import base-routing {
+        prefix "base-route";
+    }
+    organization
+        "Dell EMC";
+
+    contact
+        "http://www.dell.com/support";
+
+    description
+        "This module contains a collection of YANG definitions for
+        managing configuration and operational data for Neighbor Object";
+
+    revision 2018-07-03 {
+        description
+            "This revision replaces the interface name with list of interface names in the neighbor flush RPC.";
+        reference "Network Platform Abstraction";
+    }
+    revision 2018-01-31 {
+        description
+            "This revision adds the IP prefix in the neighbor flush RPC.";
+        reference "Network Platform Abstraction";
+    }
+    revision 2017-10-16 {
+        description
+            "This revision adds the auto neighbor refresh configuration.";
+        reference "Network Platform Abstraction";
+    }
+    revision 2017-10-09 {
+        description
+            "This revision adds the vrf-name in the flush RPC.";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2017-03-13 {
+        description
+            "Clear neighbor functionality";
+        reference "Network Platform Abstraction";
+    }
+
+    revision 2016-11-03 {
+        description
+            "Initial revision.";
+        reference "Network Platform Abstraction";
+    }
+
+    /* 1. Proactive resolution for Route associated NH or apps (PBR, ER-SPAN) desired NH.
+       2. To program blackhole (drop) or forward entry in the NPU */
+    augment "/base-route:obj/base-route:nbr" {
+        leaf phy_ifindex {
+            type base-cmn:logical-ifindex;
+            description "Incase of VLAN IP routing, this holds the physical interface through which the MAC is learnt.";
+        }
+    }
+
+    /* To flush the Nbr entries on admin down */
+    augment "/if:interfaces-state/if:interface" {
+        leaf if-index {
+            type base-cmn:logical-ifindex;
+            description "Flush the neighbor entries configured/learnt on this interface";
+        }
+    }
+
+
+    /* For clear arp/neighbor support */
+    rpc flush {
+     description "Flush the Neighbor entries for given input per Interface or AF or neighbor address/prefix";
+     input {
+
+       leaf vrf-id {
+            type uint32;
+            default 0;
+            description "VRF ID";
+            status obsolete;
+       }
+
+       leaf vrf-name {
+           mandatory true;
+           type string;
+           description "VRF device name";
+       }
+
+       leaf af {
+            type base-cmn:af-type;
+            /* Default Address family - IPv4 (supports both IPv4 and IPv6) */
+            default "inet";
+            description "Address Family of the Neighbor entries to be cleared";
+       }
+
+        /* To flush the Neighbor entries on list of interface names. */
+       leaf-list ifname {
+            type string;
+            description "Flush the Neighbor entries configured/learnt on list of interfaces.";
+       }
+
+       leaf ip {
+            type inet:ip-address;
+            description "Neighbor address/prefix to be flushed.
+               Prefix & prefix-len are specified to flush all neighbors in that subnet.";
+       }
+
+       leaf prefix-len {
+            type uint32;
+            description "Prefix length of neighbors in the subnet to be flushed.";
+       }
+     }
+    }
+
+    list auto-nbr-refresh {
+        key "vrf-name af";
+        description "This controls whether or not the auto neighbor refresh is enabled
+            for the stale neighbor.";
+
+        leaf vrf-name {
+            type string;
+            description "VRF device name";
+        }
+        leaf af {
+            type base-cmn:af-type;
+            description "Address Family";
+        }
+        leaf enable {
+            type boolean;
+            default true;
+            description "This set to true to enable auto neighbor refresh and false otherwise.";
+        }
+    }
+
+}

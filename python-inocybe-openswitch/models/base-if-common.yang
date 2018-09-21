@@ -1,7 +1,7 @@
 module base-if-common {
     namespace "http://www.dellemc.com/networking/os10/base/dell-base-if-common";
 
-    prefix "dell-base-if-cmn";
+    prefix "base-if-cmn";
 
     import ietf-interfaces {
         prefix "if";
@@ -88,11 +88,4 @@ module base-if-common {
                 attributes needed depends on requested interface type";
     }
 
-    augment "dell-if:clear-counters/dell-if:input" {
-
-    }
-
-    augment "dell-if:clear-eee-counters/dell-if:input" {
-
-    }
 }
