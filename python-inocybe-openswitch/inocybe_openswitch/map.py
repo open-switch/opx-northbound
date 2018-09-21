@@ -592,12 +592,24 @@ def _fix_fec_from_cps(data):
 REV_BREAKOUT_MODE_MAP = {1:"DISABLED",
 2:"BREAKOUT_4x1",
 3:"BREAKOUT_2x1",
-4:"BREAKOUT_1x1"
+4:"BREAKOUT_1x1",
+5:"BREAKOUT_8x2",
+6:"BREAKOUT_2x2",
+7:"BREAKOUT_4x4",
+8:"BREAKOUT_2x4",
+9:"BREAKOUT_4x2",
+10:"BREAKOUT_UNKNOWN"
 }
 OUT_BREAKOUT_MODE_MAP = {"DISABLED":1,
 "BREAKOUT_4x1":2,
 "BREAKOUT_2x1":3,
-"BREAKOUT_1x1":4
+"BREAKOUT_1x1":4,
+"BREAKOUT_8x2":5,
+"BREAKOUT_2x2":6,
+"BREAKOUT_4x4":7,
+"BREAKOUT_2x4":8,
+"BREAKOUT_4x2":9,
+"BREAKOUT_UNKNOWN":10
 }
 
 def _fix_breakout_mode_to_cps(data):
@@ -960,6 +972,26 @@ def _fix_range_type_from_cps(data):
     '''Convert range type from CPS'''
     return IN_RANGE_TYPE_MAP[data]
 
+IN_FILTER_TYPE_MAP = {1:"DISABLE", 
+2:"ENABLE", 
+3:"INGRESS_ENABLE", 
+4:"EGRESS_ENABLE", 
+}
+OUT_FILTER_TYPE_MAP = {"DISABLE":1,
+"ENABLE":2,
+"INGRESS_ENABLE":3,
+"EGRESS_ENABLE":4,
+}
+
+def _fix_filter_type_to_cps(data):
+    '''Fix range type to CPS'''
+    return OUT_FILTER_TYPE_MAP[data]
+
+def _fix_filter_type_from_cps(data):
+    '''Convert range type from CPS'''
+    return IN_FILTER_TYPE_MAP[data]
+
+DO_FILTER_TYPE = (_fix_filter_type_to_cps, _fix_filter_type_from_cps)
 DO_RANGE_TYPE = (_fix_range_type_to_cps, _fix_range_type_from_cps)
 DO_PACKET_COLOR = (_fix_packet_color_to_cps, _fix_packet_color_from_cps)
 DO_STAGE = (_fix_stage_to_cps, _fix_stage_from_cps)
@@ -1010,6 +1042,7 @@ GLOBAL_MAP = TypeMap({'base-ip/ipv4/forwarding': DO_BOOL,
            'base-acl/entry/action/type':DO_ACTION_TYPE,
            'base-acl/table/allowed-match-fields':DO_MATCH_TYPE,
            'base-acl/table/stage':DO_STAGE,
+           'dell-base-if-cmn/if/interfaces/interface/vlan-filter':DO_FILTER_TYPE,
            })
 
 

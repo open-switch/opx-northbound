@@ -3,11 +3,10 @@ module base-if-vlan {
 
     prefix "base-if-vlan";
 
+    import iana-if-type { prefix "ianaift"; }
+
     import ietf-interfaces {
         prefix "if";
-    }
-    import ietf-yang-types {
-        prefix "yang";
     }
 	
     import base-common {

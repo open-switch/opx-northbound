@@ -1,0 +1,152 @@
+module base-env-tempctl {
+  namespace "http://www.dellemc.com/networking/os10/dell-base-env-tempctl";
+  prefix base-env-tempctl;
+
+  import base-platform-common {
+    prefix platform;
+  }
+
+  organization "Dell EMC";
+  contact
+    "http://www.dell.com/support";
+  description
+    "Environmental temperature control service manages various aspects including:
+     1) fan speed control (FSC),
+     2) temperature fault events handling,
+     3) logging of events and faults,
+     4) exception handling.
+
+     This model implements the configuration and Operational Data
+     related to this service.
+
+     Copyright (c) 2015-2018 by Dell EMC, All rights reserved.";
+
+  revision 2018-03-30 {
+    description "Fixing pyang IETF errors and adding documentation to the model";
+    reference "Network Platform Abstraction";
+  }
+  revision 2015-08-17 {
+    description
+      "Cleanup according to new DELL OS10 yang modelling guidelines";
+    reference "Network Platform Abstraction";
+  }
+  revision 2015-08-17 {
+    description
+      "Adding ability to set threshold values for various severity levels";
+    reference "Network Platform Abstraction";
+  }
+  revision 2015-05-20 {
+    description
+      "Moved fault-value type to dell-base-platform-common.yang";
+    reference "Network Platform Abstraction";
+  }
+  revision 2015-05-08 {
+    description
+      "Clean-up according to DELL OS10 yang Modelling guidelines";
+    reference "Network Platform Abstraction";
+  }
+  revision 2015-04-29 {
+    description
+      "Initial revision.";
+    reference "Network Platform Abstraction";
+  }
+
+
+  list fault {
+
+    // QUALIFIER: Target
+
+    key "entity-type slot sensor-name";
+
+    leaf entity-type {
+        type platform:entity-type;
+        description "Entity type";
+    }
+
+    leaf slot {
+        type uint8;
+        description "Entity slot";
+    }
+
+    leaf sensor-name {
+      type string;
+      description "Printable name for sensor";
+    }
+
+    leaf temperature {
+      type platform:temperature-type;
+      config false;
+      description "Current temperature of the sensor showing tc-fault";
+    }
+
+    leaf fault-type {
+        type platform:fault-severity;
+        config false;
+        description "Severity of current temperature control fault present";
+    }
+    description
+      "Attributes of environmental temperature control service's faults";
+  }
+
+  list fault-threshold {
+
+    // QUALIFIER: Target
+
+    key "entity-type slot sensor-name severity";
+
+    leaf entity-type {
+        type platform:entity-type;
+        description "Entity type";
+    }
+
+    leaf slot {
+        type uint8;
+        description "Entity slot";
+    }
+
+    leaf sensor-name {
+      type string;
+      description "Printable name for sensor";
+    }
+
+    leaf severity {
+      type platform:fault-severity;
+      description "Severity level of a temperature control fault";
+    }
+
+    leaf threshold {
+      type platform:temperature-type;
+      config true;
+      description "threshold temperature corresponding to severity above";
+    }
+    description
+      "Mapping of tc-fault's severity levels to threshold values";
+  }
+
+  list entity-fault {
+    description
+      "Entity faults";
+
+    key "entity-type slot";
+
+    leaf entity-type {
+        description "Entity type";
+        type platform:entity-type;
+    }
+
+    leaf slot {
+        description "Entity slot";
+        type uint8;
+    }
+
+    leaf ppid {
+        description "True <=> given entity has incorrect ppid";
+        type boolean;
+    }
+
+    leaf airflow {
+        description "True <=> given entity has incorrect airflow";
+        type boolean;
+    }
+  }
+}
